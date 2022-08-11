@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <style type="text/css">
+        canvas{
+            background-color: rgb(152, 187, 230);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="mainCanvas" width="500" height="500">
+        
+    </canvas>
+
+    <script type="text/javascript">
+        var cv = document.getElementById('mainCanvas');
+        var ctx = cv.getContext('2d');
+        //Rectangulo azul claro
+        ctx.fillStyle = "rgb(86,121,197)";
+        ctx.fillRect(10,10,50,50);
+        //Rectangulo rojo
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.fillRect (45,45,50,50);
+        //Rectangulo rosa transparente
+        ctx.fillStyle = "rgba(216,107,211,0.5)";
+        ctx.fillRect (80,80,50,50);
+
+        //Circulo (Contorno)
+        ctx.beginPath();
+        ctx.strokeStyle = "rgb(200,0,0)";
+        //Width,Height,Radius,Inicio de pintar, Fin de pintar
+        ctx.arc(250,100,40,0*Math.PI,2*Math.PI);
+        ctx.stroke();
+        //Circulo Rojo
+        ctx.beginPath();
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.arc(350,100,40,0*Math.PI,2*Math.PI);
+        ctx.fill();
+    </script>
+</body>
+</html>
