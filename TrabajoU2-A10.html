@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <style type="text/css">
+        canvas{
+            background-color: rgb(152, 187, 230);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="mainCanvas" width="500" height="500"></canvas>
+    
+    <script type="text/javascript">
+        var cv = document.getElementById('mainCanvas');
+        var ctx = cv.getContext('2d');
+
+        var color = "200,0,0";
+        var figura = 0;
+        
+        cv.addEventListener('click', function(e){
+            console.log(e);
+            radius = 30;
+            rectSize = 60;
+            ctx.fillStyle = color;
+            ctx.strokeStyle = "rgb(20,20,20)";
+            if(figura==0){
+                ctx.beginPath();
+                ctx.arc(e.offsetX,e.offsetY,radius,0*Math.PI,2*Math.PI);
+                ctx.stroke();
+                ctx.fill();
+            }else if(figura==1){
+                ctx.strokeRect(e.offsetX-(rectSize/2),e.offsetY-(rectSize/2),rectSize,rectSize);
+                ctx.fillRect(e.offsetX-(rectSize/2),e.offsetY-(rectSize/2),rectSize,rectSize);
+            }
+        })
+
+        cv.addEventListener('mouseover', function(e){
+            console.log(e);
+            color = generateRandomColor();
+        })
+
+        cv.addEventListener('mouseout', function(e){
+            console.log(e);
+            figura = Math.floor(Math.random() * 2);
+        })
+
+        function generateRandomColor() {
+            var alpha = '0.5';
+            var color = 'rgba(';
+            for (var i = 0; i < 3; i++) {
+                color += Math.floor(Math.random() * 255) + ',';
+            }
+            color += alpha + ')';
+            return color;
+        }
+    </script>
+</body>
+</html>
