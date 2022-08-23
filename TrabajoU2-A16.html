@@ -17,10 +17,11 @@
     <script type="text/javascript">
         var cv = null;
         var ctx = null;
-        var posX = 0;
-        var posY = 0;
         var player1 = null;
-        
+        var direction = null;
+        var speed = 5;
+        var puntos = 0;
+
         window.requestAnimationFrame = (function () {
         return window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
@@ -32,11 +33,69 @@
 
         window.addEventListener('load',run,false);
 
+        function Goal(x,y,width,height,color){
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.color = color;
+
+            this.pintar = function(ctx){
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x,this.y,this.width,this.height);
+            }
+        }
+
         function run(){
             cv = document.getElementById('mainCanvas');
             ctx = cv.getContext('2d');
-            player1 = new Cuadro(posX,posY,30,30,'lightgreen');
+            player1 = new Cuadro(0,0,30,30,'lightgreen');
+            goal = new Goal(Math.floor(Math.random()*470),
+                        Math.floor(Math.random()*470),
+                        30,30,generateRandomColor())
             paint();
+        }
+
+        function update(){
+            paintBg(player1.x,player1.y);
+            if(direction == 'up'){
+                player1.y -= speed;
+                if(player1.y<0){
+                    player1.y = 470;
+                }
+            }
+            if(direction == 'down'){
+                player1.y += speed;
+                if(player1.y>470){
+                    player1.y = 0;
+                }
+            }
+            if(direction == 'left'){
+                player1.x -= speed;
+                if(player1.x<0){
+                    player1.x = 470;
+                }
+            }
+            if(direction == 'right'){
+                player1.x += speed;
+                if(player1.x>470){
+                    player1.x = 0;
+                }
+            }
+            player1.pintar(ctx);
+            goal.pintar(ctx);
+            if(player1.intersects(goal)){
+                paintBg(goal.x,goal.y);
+                goal.x = Math.floor(Math.random()*470);
+                goal.y = Math.floor(Math.random()*470);
+                goal.color = generateRandomColor();
+                puntos += 5;
+                console.log('Puntos: ' + puntos);
+                speed += 1;
+                if(speed > 15){
+                    speed = 15;
+                }
+            }
         }
 
         function Cuadro(x,y,width,height,color){
@@ -63,9 +122,7 @@
 
         function paint(){
             window.requestAnimationFrame(paint);
-            
-            paintBg(player1.x,player1.y);
-            player1.pintar(ctx);
+            update();
         }
 
         function paintBg(x,y){
@@ -74,32 +131,18 @@
         }
 
         document.addEventListener('keydown',function(e){
-            paintBg(player1.x,player1.y);
             if(e.code=="ArrowUp" || e.code=="KeyW"){
-                player1.y -= 10;
-                if(player1.y<0){
-                    player1.y = 0;
-                }
+                direction = 'up';
             }
             if(e.code=="ArrowDown" || e.code=="KeyS"){
-                player1.y += 10;
-                if(player1.y>470){
-                    player1.y = 470;
-                }
+                direction = 'down';
             }
             if(e.code=="ArrowLeft" || e.code=="KeyA"){
-                player1.x -= 10;
-                if(player1.x<0){
-                    player1.x = 0;
-                }
+                direction = 'left';
             }
             if(e.code=="ArrowRight" || e.code=="KeyD"){
-                player1.x += 10;
-                if(player1.x>470){
-                    player1.x = 470;
-                }
+                direction = 'right';
             }
-            paint();
         })
 
         function generateRandomColor() {
