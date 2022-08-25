@@ -26,6 +26,7 @@
         var playerChar = new Image(30,30);
         var coin = new Image(30,30);
         var wall = new Image();
+        var pickup = new Audio();
 
         window.requestAnimationFrame = (function () {
         return window.requestAnimationFrame ||
@@ -62,6 +63,7 @@
             playerChar.src = "octopus.png";
             coin.src = "dollar.png";
             wall.src = "wall.png";
+            pickup.src = "pickup.mp3";
             goal = new Goal(Math.floor(Math.random()*470),
                         Math.floor(Math.random()*470),
                         30,30,"red")
@@ -110,6 +112,7 @@
             }
 
             if(player1.intersects(goal)){
+                pickup.play();
                 paintBg(goal.x,goal.y);
                 goal.x = Math.floor(Math.random()*470);
                 goal.y = Math.floor(Math.random()*470);
