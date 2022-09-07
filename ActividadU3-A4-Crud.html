@@ -9,65 +9,73 @@
 </head>
 <body>
     <div id="contenedor">
-        <div id="div-crud" class="row">
+        <div>
             <h1>User List</h1>
-            <div>
-                <button class="btn btn-danger mb-4" style="width: 150px; font-weight: bold;" @click="logout">Logout</button>
-                <table class="table table-dark table-bordered  table-hover" >
+            <button style="width: 150px; font-weight: bold;" @click="logout">Logout</button>
+            <p></p>
+            <button style="width: 150px; font-weight: bold;" disabled>Add new user</button>
+            <div v-if="(display=='mostrar')">
+                <table style="border: 1px solid black">
                     <thead> 
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>City</th>
-                            <th>ZipCode</th>
-                            <th>Phone</th>
+                            <th style="border: 1px solid black">ID</th>
+                            <th style="border: 1px solid black">Name</th>
+                            <th style="border: 1px solid black">Username</th>
+                            <th style="border: 1px solid black">Email</th>
+                            <th style="border: 1px solid black">City</th>
+                            <th style="border: 1px solid black">ZipCode</th>
+                            <th style="border: 1px solid black">Phone</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="user in users">
-                            <th>{{ user.id }}</th>
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.address.city }}</td>
-                            <td>{{ user.address.zipcode }}</td>
-                            <td>{{ user.phone }}</td>
+                            <th style="border: 1px solid black">{{ user.id }}</th>
+                            <td style="border: 1px solid black">{{ user.name }}</td>
+                            <td style="border: 1px solid black">{{ user.username }}</td>
+                            <td style="border: 1px solid black">{{ user.email }}</td>
+                            <td style="border: 1px solid black">{{ user.address.city }}</td>
+                            <td style="border: 1px solid black" >{{ user.address.zipcode }}</td>
+                            <td style="border: 1px solid black">{{ user.phone }}</td>
+                            <td>
+                                <button style="width: 70px; font-weight: bold;" @click="action('editar', user, indice)">Editar</button>
+                                <button style="width: 70px; font-weight: bold;" @click="remove(indice)">Eliminar</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <form action="" class="justify-content-center">
+            <form action="">
                 <p>New User:</p>
-                <div class="mb-3">
-                    <label class="form-label" for="">Name</label>
-                    <input class="form-control" style="width: 300px;" type="text" v-model="name" name="">
+                <div>
+                    <label style="border: 1px solid black" for="">Name: </label>
+                    <input style="width: 300px;" type="text" v-model="name" name="">
                 </div>
-                <div class="mb-4">
-                    <label class="form-label" for="">Username</label>
-                    <input class="form-control" style="width: 300px;" type="text" v-model="username" name="">
+                <div>
+                    <label style="border: 1px solid black" for="">Username: </label>
+                    <input style="width: 300px;" type="text" v-model="username" name="">
                 </div>
-                <div class="mb-4">
-                    <label class="form-label" for="">Email</label>
-                    <input class="form-control" style="width: 300px;" type="text" v-model="email" name="">
+                <div>
+                    <label style="border: 1px solid black" for="">Email: </label>
+                    <input style="width: 300px;" type="text" v-model="email" name="">
                 </div>
-                <div class="mb-4">
-                    <label class="form-label" for="">City</label>
-                    <input class="form-control" style="width: 300px;" type="text" v-model="city" name="">
+                <div>
+                    <label style="border: 1px solid black" for="">City: </label>
+                    <input style="width: 300px;" type="text" v-model="city" name="">
                 </div>
-                <div class="mb-4">
-                    <label class="form-label" for="">ZipCode</label>
-                    <input class="form-control" style="width: 300px;" type="text" v-model="zipcode" name="">
+                <div>
+                    <label style="border: 1px solid black" for="">ZipCode: </label>
+                    <input style="width: 300px;" type="text" v-model="zipcode" name="">
                 </div>
-                <div class="mb-4">
-                    <label class="form-label" for="">Phone</label>
-                    <input class="form-control" style="width: 300px;" type="text" v-model="phone" name="">
+                <div>
+                    <label style="border: 1px solid black" for="">Phone: </label>
+                    <input style="width: 300px;" type="text" v-model="phone" name="">
                 </div>
             </form>
-            <button class="btn btn-success mb-4" style="width: 150px; font-weight: bold;" disabled>Add new user</button>
+            <button style="width: 150px; font-weight: bold;" @click="save()">Guardar</button>
+            <button style="width: 150px; font-weight: bold;" @click="cancel()">Cancelar</button>
         </div>
-    </div>  
+    </div> 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script type="text/javascript">
         const { createApp } = Vue; 
         const app = createApp({ 
@@ -75,12 +83,17 @@
                 return {
                     users: null,
                     usuario: JSON.parse(sessionStorage.getItem("usuario")),
+                    display: 'mostrar',
+                    id: 0,
                     name: '',
                     username: '',
                     email: '',
                     city: '',
                     zipcode: '',
-                    phone: ''
+                    phone: '',
+                    evento: '',
+                    indice: 0,
+                    activo: false
                 }
             },
             watch:{
@@ -94,6 +107,77 @@
                 logout() {
                     sessionStorage.removeItem("usuario");
                     this.usuario = null;
+                },
+                
+                cancel() {
+                    this.display = 'mostrar';
+                    this.activo = false;
+                },
+                action(accion, user, indice) {
+                    if(accion=='agregar'){
+                        this.evento = 'agregar';
+                        this.mostrar = accion;
+                    }
+                    if(accion=='editar') {
+                        this.evento = 'editar';
+                        this.indice = indice;
+                        this.id = user.id;
+                        this.name = user.name;
+                        this.username = user.username;
+                        this.email = user.email;
+                        this.city = user.address.city;
+                        this.phone = user.phone;
+                        this.activo = true;
+                    }
+                },
+                save() {
+                    var validated = false;
+                    if(this.evento=='add') {
+                        if(this.name===''||this.username===''||this.email===''||this.city===''||this.phone==='') {
+                            swal("No puede haber datos incompletos", "", "info");
+                        }else{
+                            this.users.push({id: this.users[this.users.length].id, name: this.name, username: this.username, email: this.email, address:{city: this.city}, phone: this.phone});
+                            swal("El usuario ha sido agregado", "Presiona el boton para finalizar", "success");
+                            finalizado = true;
+                        }
+                    }else if(this.evento=='editar') {
+                        this.users[this.indice].id = this.id;
+                        this.users[this.indice].name = this.name;
+                        this.users[this.indice].username = this.username;
+                        this.users[this.indice].email = this.email;
+                        this.users[this.indice].address.city = this.city;
+                        this.users[this.indice].phone = this.phone;
+                        swal("El usuario se ha editado exitosamente", "Presiona el boton para finalizar", "success");
+                        validated = true;
+                        this.activo = false;
+                    }
+                    if(validated){
+                        this.name = '';
+                        this.username = '';
+                        this.email = '';
+                        this.city = '';
+                        this.phone = '';
+                        this.display = 'mostrar';
+                        validated = false;
+                    }
+                },
+                remove(indice) {
+                    swal({
+                        title: "AVISO! Este usuario sera eliminado!",
+                        text: "Al eliminarse no se podra recuperar los datos guardados",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    }).then((willDelete) => {
+                        if (willDelete) {
+                            this.users.splice(indice,1);
+                            swal("El usuario ha sido eliminado", {
+                            icon: "success",
+                            });
+                        } else {
+                            swal("Ninguna accion se ha realizado");
+                        }
+                    });
                 }
             },
             mounted(){
