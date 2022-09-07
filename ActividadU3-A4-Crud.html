@@ -23,7 +23,6 @@
                             <th style="border: 1px solid black">Username</th>
                             <th style="border: 1px solid black">Email</th>
                             <th style="border: 1px solid black">City</th>
-                            <th style="border: 1px solid black">ZipCode</th>
                             <th style="border: 1px solid black">Phone</th>
                         </tr>
                     </thead>
@@ -34,7 +33,6 @@
                             <td style="border: 1px solid black">{{ user.username }}</td>
                             <td style="border: 1px solid black">{{ user.email }}</td>
                             <td style="border: 1px solid black">{{ user.address.city }}</td>
-                            <td style="border: 1px solid black">{{ user.address.zipcode }}</td>
                             <td style="border: 1px solid black">{{ user.phone }}</td>
                             <td>
                                 <button style="width: 70px; font-weight: bold;" @click="action('edit', user, indice)">Editar</button>
@@ -63,10 +61,6 @@
                     <input style="width: 300px;" type="text" v-model="city" name="">
                 </div>
                 <div>
-                    <label style="border: 1px solid black" for="">ZipCode: </label>
-                    <input style="width: 300px;" type="text" v-model="zipcode" name="">
-                </div>
-                <div>
                     <label style="border: 1px solid black" for="">Phone: </label>
                     <input style="width: 300px;" type="text" v-model="phone" name="">
                 </div>
@@ -89,11 +83,9 @@
                     username: '',
                     email: '',
                     city: '',
-                    zipcode: '',
                     phone: '',
                     evento: '',
-                    indice: 0,
-                    active: false
+                    indice: 0
                 }
             },
             watch:{
@@ -109,8 +101,12 @@
                     this.usuario = null;
                 },
                 cancel() {
+                    this.name = '';
+                    this.username = '';
+                    this.email = '';
+                    this.city = '';
+                    this.phone = '';
                     this.display = 'show';
-                    this.active = false;
                 },
                 action(accion, user, indice) {
                     this.display = accion;
@@ -126,7 +122,6 @@
                         this.email = user.email;
                         this.city = user.address.city;
                         this.phone = user.phone;
-                        this.active = true;
                     }
                 },
                 save() {
@@ -137,7 +132,7 @@
                         }else{
                             this.users.push({id: this.users[this.users.length-1].id+1, name: this.name, username: this.username, email: this.email, address:{city: this.city}, phone: this.phone});
                             swal("El usuario ha sido agregado", "Presiona el boton para finalizar", "success");
-                            finalizado = true;
+                            validated = true;
                         }
                     }else if(this.evento=='edit') {
                         this.users[this.indice].id = this.id;
@@ -148,7 +143,6 @@
                         this.users[this.indice].phone = this.phone;
                         swal("El usuario se ha editado exitosamente", "Presiona el boton para finalizar", "success");
                         validated = true;
-                        this.active = false;
                     }
                     if(validated){
                         this.name = '';
