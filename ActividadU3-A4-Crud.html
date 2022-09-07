@@ -27,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users">
+                        <tr v-for="(user, indice) in users">
                             <th style="border: 1px solid black">{{ user.id }}</th>
                             <td style="border: 1px solid black">{{ user.name }}</td>
                             <td style="border: 1px solid black">{{ user.username }}</td>
