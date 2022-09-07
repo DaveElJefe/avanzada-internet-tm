@@ -13,8 +13,8 @@
             <h1>User List</h1>
             <button style="width: 150px; font-weight: bold;" @click="logout">Logout</button>
             <p></p>
-            <button style="width: 150px; font-weight: bold;" @click="action('agregar', null, null) :disabled="activo">Add new user</button>
-            <div v-if="(display=='mostrar')">
+            <button style="width: 150px; font-weight: bold;" @click="action('add', null, null)">Add new user</button>
+            <div v-if="(display=='show')">
                 <table style="border: 1px solid black">
                     <thead> 
                         <tr>
@@ -34,17 +34,17 @@
                             <td style="border: 1px solid black">{{ user.username }}</td>
                             <td style="border: 1px solid black">{{ user.email }}</td>
                             <td style="border: 1px solid black">{{ user.address.city }}</td>
-                            <td style="border: 1px solid black" >{{ user.address.zipcode }}</td>
+                            <td style="border: 1px solid black">{{ user.address.zipcode }}</td>
                             <td style="border: 1px solid black">{{ user.phone }}</td>
                             <td>
-                                <button style="width: 70px; font-weight: bold;" @click="action('editar', user, indice)">Editar</button>
+                                <button style="width: 70px; font-weight: bold;" @click="action('edit', user, indice)">Editar</button>
                                 <button style="width: 70px; font-weight: bold;" @click="remove(indice)">Eliminar</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <form action="">
+            <form v-else action="">
                 <p>New User:</p>
                 <div>
                     <label style="border: 1px solid black" for="">Name: </label>
@@ -83,7 +83,7 @@
                 return {
                     users: null,
                     usuario: JSON.parse(sessionStorage.getItem("usuario")),
-                    display: 'mostrar',
+                    display: 'show',
                     id: 0,
                     name: '',
                     username: '',
@@ -93,7 +93,7 @@
                     phone: '',
                     evento: '',
                     indice: 0,
-                    activo: false
+                    active: false
                 }
             },
             watch:{
@@ -108,18 +108,17 @@
                     sessionStorage.removeItem("usuario");
                     this.usuario = null;
                 },
-                
                 cancel() {
-                    this.display = 'mostrar';
-                    this.activo = false;
+                    this.display = 'show';
+                    this.active = false;
                 },
                 action(accion, user, indice) {
-                    if(accion=='agregar'){
-                        this.evento = 'agregar';
-                        this.mostrar = accion;
+                    this.display = accion;
+                    if(accion=='add'){
+                        this.evento = 'add';
                     }
-                    if(accion=='editar') {
-                        this.evento = 'editar';
+                    if(accion=='edit') {
+                        this.evento = 'edit';
                         this.indice = indice;
                         this.id = user.id;
                         this.name = user.name;
@@ -127,20 +126,20 @@
                         this.email = user.email;
                         this.city = user.address.city;
                         this.phone = user.phone;
-                        this.activo = true;
+                        this.active = true;
                     }
                 },
                 save() {
                     var validated = false;
-                    if(this.evento=='agregar') {
+                    if(this.evento=='add') {
                         if(this.name===''||this.username===''||this.email===''||this.city===''||this.phone==='') {
                             swal("No puede haber datos incompletos", "", "info");
                         }else{
-                            this.users.push({id: this.users[this.users.length].id, name: this.name, username: this.username, email: this.email, address:{city: this.city}, phone: this.phone});
+                            this.users.push({id: this.users[this.users.length-1].id+1, name: this.name, username: this.username, email: this.email, address:{city: this.city}, phone: this.phone});
                             swal("El usuario ha sido agregado", "Presiona el boton para finalizar", "success");
                             finalizado = true;
                         }
-                    }else if(this.evento=='editar') {
+                    }else if(this.evento=='edit') {
                         this.users[this.indice].id = this.id;
                         this.users[this.indice].name = this.name;
                         this.users[this.indice].username = this.username;
@@ -149,7 +148,7 @@
                         this.users[this.indice].phone = this.phone;
                         swal("El usuario se ha editado exitosamente", "Presiona el boton para finalizar", "success");
                         validated = true;
-                        this.activo = false;
+                        this.active = false;
                     }
                     if(validated){
                         this.name = '';
@@ -157,7 +156,7 @@
                         this.email = '';
                         this.city = '';
                         this.phone = '';
-                        this.display = 'mostrar';
+                        this.display = 'show';
                         validated = false;
                     }
                 },
