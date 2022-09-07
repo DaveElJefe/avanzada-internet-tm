@@ -13,7 +13,7 @@
             <h1>User List</h1>
             <button style="width: 150px; font-weight: bold;" @click="logout">Logout</button>
             <p></p>
-            <button style="width: 150px; font-weight: bold;" disabled>Add new user</button>
+            <button style="width: 150px; font-weight: bold;" @click="action('agregar', null, null) :disabled="activo">Add new user</button>
             <div v-if="(display=='mostrar')">
                 <table style="border: 1px solid black">
                     <thead> 
@@ -132,7 +132,7 @@
                 },
                 save() {
                     var validated = false;
-                    if(this.evento=='add') {
+                    if(this.evento=='agregar') {
                         if(this.name===''||this.username===''||this.email===''||this.city===''||this.phone==='') {
                             swal("No puede haber datos incompletos", "", "info");
                         }else{
