@@ -1,3 +1,11 @@
+.container form {
+  width: fit-content;
+  min-height: 100px;
+}
+.container form fieldset label {
+  font-size: 18px;
+  font-weight: bold;
+}
 .container form fieldset button {
   width: 60px;
   min-height: 30px;
