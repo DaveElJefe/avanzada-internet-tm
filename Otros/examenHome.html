@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        div.scrollmenu {
+            background-color: #333;
+            overflow: auto;
+            white-space: nowrap;
+        }
+        div.div-movies {
+            width: 350px;
+            display: inline-block;
+            color: white;
+            padding: 14px;
+        }
+        div.div-movies img{
+            height: 250px;
+        }
+    </style>
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div id="contenedor">
+        
+        <div id="div-populares" class="scrollmenu">
+            <div class="div-movies" v-for="(movie, index) in movies">
+                <h3 class="">Peliculas populares</h3>
+                <div class="">
+                    <img :src="'https://image.tmdb.org/t/p/w500/'+movie.poster_path">
+                    <div class="">
+                        <h3 class="">{{movie.vote_average}}</h3>
+                        <h2>{{movie.title}}</h2>
+                        <p>{{movie.release_date}}</p>
+                    </div>
+                    <div class="">
+                        <button class="" @click="">Detalles</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        //Probar estilos de las peliculas con Carousel (?)
+        //Buscar el estilo de scroll de un div
+        const { createApp } = Vue; 
+        const app = createApp({ 
+            data() {
+                return {
+                    user: JSON.parse(sessionStorage.getItem("user")),
+                    movies: null
+                }
+            },
+            methods: {
+                logout() {
+                    sessionStorage.removeItem("user");
+                    this.user = null;
+                },
+                details(movie){
+                    sessionStorage.setItem('Movie', JSON.stringify(movie));
+                    //Mandarlo a los detalles
+                    //location.href = "";
+                }
+            },
+            async mounted(){
+                var config = {
+                    method: 'get',
+                    //Despues utilizar otro API Key V3? (Actualmente uso el mio)
+                    url: 'https://api.themoviedb.org/3/movie/popular?api_key=bed2b0accc555d42ba986bfa83ee1388&language=es-MX',
+                };
+                try {
+                    const response = await axios(config);
+                    if(response.data.results){
+                        this.movies = JSON.parse(JSON.stringify(response.data.results));
+                    }
+                } catch (error) {
+                    swal("No se pudieron obtener las peliculas.", "", "error");
+                }
+                if(!this.user){
+                    //Llevarlo al login
+                    //location.href= "";
+                }
+            }
+        }).mount('#contenedor');
+    </script>
+</body>
+</html>

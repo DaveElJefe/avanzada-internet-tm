@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <style type="text/css">
+        canvas{
+            background-color: rgb(152, 187, 230);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="mainCanvas" width="500" height="500"></canvas>
+    
+    <script type="text/javascript">
+        var cv = document.getElementById('mainCanvas');
+        var ctx = cv.getContext('2d');
+
+        var posX = 0;
+        var posY = 0;
+        
+        document.addEventListener('keydown',function(e){
+            console.log(e);
+            
+            if(e.code=="ArrowUp" || e.code=="KeyW"){
+                posY -= 20;
+                if(posY<0){
+                    posY = 0;
+                }
+            }
+
+            if(e.code=="ArrowDown" || e.code=="KeyS"){
+                posY += 20;
+                if(posY>480){
+                    posY = 480;
+                }
+            }
+
+            if(e.code=="ArrowLeft" || e.code=="KeyA"){
+                posX -= 20;
+                if(posX<0){
+                    posX = 0;
+                }
+            }
+
+            if(e.code=="ArrowRight" || e.code=="KeyD"){
+                posX += 20;
+                if(posX>480){
+                    posX = 480;
+                }
+            }
+
+            paintRect();
+        })
+
+        function paintRect(){
+            ctx.fillStyle = 'lightgreen';
+            ctx.fillRect(posX,posY,20,20);
+        }
+    </script>
+</body>
+</html>

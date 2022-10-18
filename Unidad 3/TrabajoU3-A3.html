@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://unpkg.com/vue@3"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="contenedor">
+        <form>
+            <fieldset>
+                <legend>Acceso al panel</legend>
+                <label>Correo electronico</label>
+                <input type="email" v-model="email" name="">
+                <label>Password</label>
+                <input type="password" v-model="password" name="">
+                <button @click="login">Acceder</button>
+            </fieldset>
+        </form>
+    </div>
+    <script type="text/javascript">
+        const { createApp } = Vue;
+        const data = null;
+        const error = null;
+
+        createApp({
+            data(){
+                return{
+                    users: null,
+                    email: null,
+                    password: null
+                }
+            },
+            methods:{
+                login(e){
+                    e.preventDefault();
+                    var user_email = this.email;
+                    var user_password = this.password;
+                    var access = this.users.map(function(user){
+                        if(user_email.toLowerCase() == user.email.toLowerCase()){
+                            console.log("Correo correcto");
+                            if(user_password == user.password){
+                                console.log("Password correcta");
+                                return true;
+                            }
+                        }
+                    })
+                }
+            },
+            mounted(){
+                fetch('users.json')
+                    .then((res) => res.json())
+                    .then((json) => console.log(this.users = json))
+                    .catch((err) => console.log(err))
+            }
+        }).mount('#contenedor')
+    </script>
+</body>
+</html>
