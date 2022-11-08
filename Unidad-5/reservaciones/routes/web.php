@@ -17,6 +17,17 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/login', function(){
+    return view('login');
+})->name('login');
+
+Route::get('/prueba', function(){
+    return "Hola";
+})->middleware('auth');
 
 //Rutas para usuario
 Route::get('users/', [UserController::class, 'index']);
@@ -37,10 +48,7 @@ Route::put('clients', [ClientController::class, 'update']);
 Route::get('reservations/',[ReservationController::class, 'index']);
 Route::get('reservations/{id}',[ReservationController::class, 'show']);
 
-/* Rutas de prueba anteriores
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
 Route::get('saludo', function(){
     echo "Hola ";
 });

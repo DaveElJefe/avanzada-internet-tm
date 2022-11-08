@@ -7,10 +7,10 @@
     <title>Formulario crear cliente</title>
 </head>
 <body>
-    <form method="post" action="http://127.0.0.1:8000/clients">
+    <form method="post" action="http://127.0.0.1:8000/clients/">
         @csrf
         <label>Nombre:</label>
-        <input type="text" placeholder="Dave" name="name">
+        <input type="text" placeholder="your name" name="name">
         <br>
         <label>Correo:</label>
         <input type="email" placeholder="example@domain.com" name="email">
